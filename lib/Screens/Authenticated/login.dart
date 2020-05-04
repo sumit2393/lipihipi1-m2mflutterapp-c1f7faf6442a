@@ -231,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Colors.deepOrange,
                                       borderRadius: BorderRadius.circular(3)),
                                   child: Text(
-                                    isLoading ? 'Loading...' : 'Save',
+                                    isLoading ? 'Loading...' : 'Login',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,

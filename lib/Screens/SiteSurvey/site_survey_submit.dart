@@ -53,6 +53,8 @@ class SiteSurveySubmitPage extends StatefulWidget {
 }
 
 class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
+
+  FocusNode myfocusnode;
   final String surveyId;
   final String projectId;
   final String title;
@@ -139,11 +141,20 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
   @override
   void initState() {
     // TODO: implement initState
-    isONTDetailsClicked = false;
+    isONTDetailsClicked = true;
+
     super.initState();
     _getLocation().then((position) {
       userLocation = position;
+      myfocusnode=FocusNode();
     });
+  }
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myfocusnode.dispose();
+
+    super.dispose();
   }
 
   Future<Position> _getLocation() async {
@@ -303,12 +314,14 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
       list = parseData(json.decode(response.body));
 
 
-      ImageList.clear();
-      _access_point_name.clear();
-      imageNames= ' ';
-      check_edit_access_point = true;
-      double screen = 400;
-      screenheight = screenheight + screen;
+      setState(() {
+        ImageList.clear();
+        _access_point_name.clear();
+        imageNames= ' ';
+        check_edit_access_point = true;
+        double screen = 400;
+        screenheight = screenheight + screen;
+      });
 
 
 
@@ -585,13 +598,13 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
       getReasonsList();
     }
 
-    if (isLoading) {
-      return Container(
-          height: 100,
-          margin: EdgeInsets.only(top: 60),
-          decoration: BoxDecoration(color: Color(0x80787878)),
-          child: kLoadingWidget(context));
-    }
+//    if (isLoading) {
+//      return Container(
+//          height: 100,
+//          margin: EdgeInsets.only(top: 60),
+//          decoration: BoxDecoration(color: Color(0x80787878)),
+//          child: kLoadingWidget(context));
+//    }
 
 
     return Scaffold(
@@ -609,10 +622,10 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
         ),
         backgroundColor: Colors.black,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => DashboardPage()),
+                MaterialPageRoute(builder: (_) => SiteSurveyPage()),
               );
             }),
         actions: <Widget>[
@@ -627,242 +640,167 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
       ),
       body: SingleChildScrollView(
         //physics: ScrollPhysics(),
-        child: Container(
-          height: MediaQuery.of(context).size.height + screenheight,
-          decoration: BoxDecoration(color: Color(0xE5F4FD)),
-          child: Column(
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    width: screenSize.width * 0.90,
-                    height: 185,
-                    margin: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 15.0, right: 15.0),
-                    //padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(.7),
-                        borderRadius:
-                        new BorderRadius.all(Radius.circular(10.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 15),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "State: $gpStateName",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 7, bottom: 7),
-                                          child: Text(
-                                            "District: $gpDistrictName",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "GP: $gpName",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 7, bottom: 7),
-                                          child: Text(
-                                            "Block: $gpBlockName",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ),
-                          MySeparator(color: Colors.white.withOpacity(.4)),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 0),
-                            child: Row(
-                              children: <Widget>[
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: <Widget>[
+                Container(
+//                height: MediaQuery.of(context).size.height + screenheight/2,
+                  decoration: BoxDecoration(color: Color(0xE5F4FD)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: screenSize.width * 0.90,
+                        height: 185,
+                        margin: EdgeInsets.only(
+                            top: 10.0, bottom: 10.0, left: 15.0, right: 15.0),
+                        //padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(.7),
+                            borderRadius:
+                            new BorderRadius.all(Radius.circular(10.0))),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15, bottom: 15),
+                                child: Row(
                                   children: <Widget>[
-                                    Text(
-                                      "Vle: $gpVillageName",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 12, bottom: 10),
-                                        child: Container(
-                                          height: 34,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              //border: Border.all(color: Colors.black54.withOpacity(0.4), width: 0.2),
-                                              borderRadius:
-                                              new BorderRadius.all(
-                                                  Radius.circular(20.0))),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                _launchCaller(gpMobileNumber);
-                                              },
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.phone_in_talk,
-                                                    color: Colors.blue,
-                                                  ),
-                                                  Text(
-                                                      "    CALL | +91 $gpMobileNumber")
-                                                ],
+                                    Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              "State: $gpStateName",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 7, bottom: 7),
+                                              child: Text(
+                                                "District: $gpDistrictName",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold),
                                               ),
                                             ),
-                                          ),
+                                          ],
+                                        )),
+                                    Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              "GP: $gpName",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 7, bottom: 7),
+                                              child: Text(
+                                                "Block: $gpBlockName",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
                                         )),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 25, 15, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("GP Feasibility:",
-                            style:
-                            TextStyle(color: Colors.black54, fontSize: 16)),
-                        Container(
-                          height: 50,
-                          width: 160,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              border:
-                              Border.all(color: Colors.black54, width: .2)),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.fromLTRB(13, 0, 0, 0),
-                                    child: DropdownButton<String>(
-                                      hint: Text('Select'),
-                                      isExpanded: true,
-                                      value: _selectedGpfeasibility,
-                                      icon: Icon(
-                                        Icons.expand_more,
-                                        size: 35,
-                                      ),
-                                      iconSize: 24,
-                                      elevation: 16,
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16),
-                                      underline: Container(
-                                        height: 0,
-                                      ),
-                                      onChanged: (String value) {
-                                        setState(() {
-                                          _selectedGpfeasibility = value;
-                                          print(_selectedGpfeasibility);
-                                        });
-                                      },
-                                      items: _Gpfeasibility.map((gp_faci) {
-                                        return DropdownMenuItem<String>(
-                                          value: gp_faci,
-                                          child: Text(
-                                            gp_faci,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        );
-                                      }).toList(),
+                              ),
+                              MySeparator(color: Colors.white.withOpacity(.4)),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15, bottom: 0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          "Vle: $gpVillageName",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 12, bottom: 10),
+                                            child: Container(
+                                              height: 34,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  //border: Border.all(color: Colors.black54.withOpacity(0.4), width: 0.2),
+                                                  borderRadius:
+                                                  new BorderRadius.all(
+                                                      Radius.circular(20.0))),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    _launchCaller(gpMobileNumber);
+                                                  },
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.phone_in_talk,
+                                                        color: Colors.blue,
+                                                      ),
+                                                      Text(
+                                                          "    CALL | +91 $gpMobileNumber")
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                      ],
                                     ),
-                                  ),
-                                ]),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  _selectedGpfeasibility == null ? Container() : Container(),
-                  _selectedGpfeasibility == 'No'
-                      ? Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 20, left: 15, right: 15),
+                        padding: const EdgeInsets.fromLTRB(15, 25, 15, 10),
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
+                            Text("GP Feasibility:",
+                                style:
+                                TextStyle(color: Colors.black54, fontSize: 16)),
                             Container(
                               height: 50,
-                              width:
-                              MediaQuery.of(context).size.width - 30,
+                              width: 160,
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                      color: Colors.black54, width: .2)),
+                                  border:
+                                  Border.all(color: Colors.black54, width: .2)),
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    0, 0, 10, 0),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Padding(
                                         padding:
-                                        const EdgeInsets.fromLTRB(
-                                            13, 0, 0, 0),
+                                        const EdgeInsets.fromLTRB(13, 0, 0, 0),
                                         child: DropdownButton<String>(
-                                          hint: Text(
-                                              'Please Select Reason'),
+                                          hint: Text('Select'),
                                           isExpanded: true,
-                                          value: _selectedReasonlist,
+                                          value: _selectedGpfeasibility,
                                           icon: Icon(
                                             Icons.expand_more,
                                             size: 35,
@@ -870,25 +808,22 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
                                           iconSize: 24,
                                           elevation: 16,
                                           style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 16),
+                                              color: Colors.black54, fontSize: 16),
                                           underline: Container(
                                             height: 0,
                                           ),
                                           onChanged: (String value) {
                                             setState(() {
-                                              _selectedReasonlist = value;
-                                              print(_selectedReasonlist);
+                                              _selectedGpfeasibility = value;
+                                              print(_selectedGpfeasibility);
                                             });
                                           },
-                                          items: reasonList.map((r_list) {
-                                            return DropdownMenuItem<
-                                                String>(
-                                              value: r_list,
+                                          items: _Gpfeasibility.map((gp_faci) {
+                                            return DropdownMenuItem<String>(
+                                              value: gp_faci,
                                               child: Text(
-                                                r_list,
-                                                textAlign:
-                                                TextAlign.center,
+                                                gp_faci,
+                                                textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.black54,
                                                   fontSize: 16.0,
@@ -904,1328 +839,223 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
                           ],
                         ),
                       ),
-                      Column(
+                      _selectedGpfeasibility == null ? Container() : Container(),
+                      _selectedGpfeasibility == 'No'
+                          ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
-                            padding:
-                            const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                            child: Text(
-                              "Uploaded Images",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 16),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                            const EdgeInsets.fromLTRB(15, 5, 15, 15),
+                            padding: const EdgeInsets.only(
+                                bottom: 20, left: 15, right: 15),
                             child: Row(
                               mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                GestureDetector(
-                                  //onTap: () => {_pickCameraImage(parentContext)},
-                                  onTap: () {
-                                    captureImage(ImageSource.camera,
-                                        parentContext);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(5),
-                                        color: Colors.blue),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          27, 15, 27, 15),
-                                      child: Text(
-                                        "Take Picture",
-                                        style: TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    captureImage(ImageSource.gallery,
-                                        parentContext);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(5),
-                                        color: Colors.blue),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          27, 15, 27, 15),
-                                      child: Text(
-                                        "Browse File to upload",
-                                        style: TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10, 10, 10, 0),
-                              child: Container(
-                                height: 120,
-                                width: MediaQuery.of(context).size.width,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0,
-                                      left: 5,
-                                      right: 5,
-                                      bottom: 0),
-                                  child: GridView.count(
-                                    crossAxisCount: 3,
-                                    children: List.generate(
-                                        ImageList.length, (index) {
-                                      File file = ImageList[index];
-                                      return Column(
+                                Container(
+                                  height: 50,
+                                  width:
+                                  MediaQuery.of(context).size.width - 30,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: Colors.black54, width: .2)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0, 0, 10, 0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  8.0),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  8.0),
-                                              child: Image.file(
-                                                file,
-                                                fit: BoxFit.cover,
-                                                height: 75,
-                                                width: 100,
-                                              ),
-                                            ),
-                                          ),
                                           Padding(
                                             padding:
-                                            const EdgeInsets.only(
-                                                top: 10),
-                                            child: GestureDetector(
-                                              onTap: () {
+                                            const EdgeInsets.fromLTRB(
+                                                13, 0, 0, 0),
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                  'Please Select Reason'),
+                                              isExpanded: true,
+                                              value: _selectedReasonlist,
+                                              icon: Icon(
+                                                Icons.expand_more,
+                                                size: 35,
+                                              ),
+                                              iconSize: 24,
+                                              elevation: 16,
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 16),
+                                              underline: Container(
+                                                height: 0,
+                                              ),
+                                              onChanged: (String value) {
                                                 setState(() {
-                                                  ImageList.removeAt(
-                                                      index);
-                                                  print(
-                                                      "iiisdfgggggggggggggggggggggg");
+                                                  _selectedReasonlist = value;
+                                                  print(_selectedReasonlist);
                                                 });
                                               },
-                                              child: Text(
-                                                "Delete",
-                                                style: TextStyle(
-                                                    color:
-                                                    Colors.black54),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }),
-                                  ),
-                                ),
-                              )),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            left: 0.0,
-                            top: 10.0,
-                            bottom: 20.0,
-                            right: 5.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.center,
-                              child: new GestureDetector(
-                                onTap: () {
-                                  if (_selectedReasonlist == null) {
-                                    Toast.show(
-                                        "Please Select Reason", context,
-                                        duration: Toast.LENGTH_SHORT,
-                                        gravity: Toast.BOTTOM);
-                                  } else {
-                                    surveysubmit_no(
-                                      apiToken.toString(),
-                                      widget.projectId.toString(),
-                                      widget.surveyId.toString(),
-                                      _selectedGpfeasibility.toString(),
-                                      _selectedReasonlist.toString(),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  width: 120,
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  decoration: new BoxDecoration(
-                                      color: Colors.deepOrange,
-                                      borderRadius:
-                                      BorderRadius.circular(3)),
-                                  child: Text(
-                                    'Save',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                      : Container(),
-                  _selectedGpfeasibility == 'Yes'
-                      ? Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          isONTDetailsClicked = !isONTDetailsClicked;
-                        });
-                      },
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              top: 10 ,bottom: 10, left: 15, right: 15),
-                          width: MediaQuery.of(context).size.width,
-                          height: 60,
-                          alignment: Alignment.centerLeft,
-                          color: Colors.blueGrey[600],
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("ONT Details",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16)),
-                              Icon(!isONTDetailsClicked? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up, color: Colors.white,),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      Visibility(
-                      visible: isONTDetailsClicked? true :false,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("ONT Available:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value:
-                                                _selectedOntAvailableList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedOntAvailableList =
-                                                        value;
-                                                    print(
-                                                        _selectedOntAvailableList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
+                                              items: reasonList.map((r_list) {
+                                                return DropdownMenuItem<
+                                                    String>(
+                                                  value: r_list,
+                                                  child: Text(
+                                                    r_list,
+                                                    textAlign:
+                                                    TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 16.0,
                                                     ),
-                                                  );
-                                                }).toList(),
-                                              ),
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("ONT Power Status:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value:
-                                                _selectedOntPowerStateList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedOntPowerStateList =
-                                                        value;
-                                                    print(
-                                                        _selectedOntPowerStateList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("ONT Make & Model:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value: _selectedMakeModelList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedMakeModelList =
-                                                        value;
-                                                    print(
-                                                        _selectedMakeModelList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("ONT Make ID:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: TextFormField(
-                                        controller: _macIdController,
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.fromLTRB(
-                                              15.0, 10.0, 15.0, 10.0),
-                                          hintText: 'Enter Mac id',
-                                          //labelText: 'Email',
-                                          border: InputBorder.none,
-                                          hintStyle:
-                                          TextStyle(color: Colors.black54),
-                                        ),
-                                        style: TextStyle(color: Colors.black54),
-                                        keyboardType: TextInputType.text,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("POE Status:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value: _selectedPoeStatusList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedPoeStatusList =
-                                                        value;
-                                                    print(
-                                                        _selectedPoeStatusList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("Alarm Status:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value: _selectedAlarmStatusList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedAlarmStatusList =
-                                                        value;
-                                                    print(
-                                                        _selectedAlarmStatusList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("Power Running:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value: _selectedPowerRunning,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedPowerRunning =
-                                                        value;
-                                                    print(
-                                                        _selectedPowerRunning);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("Solar Panel Available:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value:
-                                                _selectedSolarPanelAvailableList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedSolarPanelAvailableList =
-                                                        value;
-                                                    print(
-                                                        _selectedSolarPanelAvailableList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("CCU Available:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value:
-                                                _selectedCcuAvailableList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedCcuAvailableList =
-                                                        value;
-                                                    print(
-                                                        _selectedCcuAvailableList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("Battery Available:",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  13, 0, 0, 0),
-                                              child: DropdownButton<String>(
-                                                hint: Text('Select'),
-                                                isExpanded: true,
-                                                value:
-                                                _selectedBatteryAvailableList,
-                                                icon: Icon(
-                                                  Icons.expand_more,
-                                                  size: 35,
-                                                ),
-                                                iconSize: 24,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 16),
-                                                underline: Container(
-                                                  height: 0,
-                                                ),
-                                                onChanged: (String value) {
-                                                  setState(() {
-                                                    _selectedBatteryAvailableList =
-                                                        value;
-                                                    print(
-                                                        _selectedBatteryAvailableList);
-                                                  });
-                                                },
-                                                items:
-                                                _selectlist.map((s_list) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: s_list,
-                                                    child: Text(
-                                                      s_list,
-                                                      textAlign:
-                                                      TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 15, right: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("ONT LAN Cable \nRequired Length(M):",
-                                      style: TextStyle(
-                                          color: Colors.black54, fontSize: 16)),
-                                  Container(
-                                    height: 50,
-                                    width: 160,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54, width: .2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0),
-                                      child: TextFormField(
-                                        controller: _cable_req_length,
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.fromLTRB(
-                                              15.0, 10.0, 15.0, 10.0),
-                                          hintText: 'Such as 12, 13, 15',
-                                          //labelText: 'Email',
-                                          border: InputBorder.none,
-                                          hintStyle:
-                                          TextStyle(color: Colors.black54),
-                                        ),
-                                        style: TextStyle(color: Colors.black54),
-                                        keyboardType: TextInputType.text,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  left: 0.0, top: 20.0, bottom: 20, right: 5.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.center,
-                                    child: new GestureDetector(
-                                      onTap: () {
-                                        if (_selectedOntAvailableList == null) {
-                                          Toast.show(
-                                              "Please Select ONT Available",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedOntPowerStateList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select ONT Power Status",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedMakeModelList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select ONT Make & Model",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_macIdController.text
-                                            .toString() ==
-                                            "") {
-                                          Toast.show(
-                                              "Please Fill Mac ID", context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedPoeStatusList ==
-                                            null) {
-                                          Toast.show("Please Select Poe Status",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedAlarmStatusList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select Alarm Status",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedSolarPanelAvailableList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select Solar Panel Available",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedCcuAvailableList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select CCU Available",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_cable_req_length.text
-                                            .toString() ==
-                                            "") {
-                                          Toast.show(
-                                              "Please Fill Cable Req Length",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedPowerRunning ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select Power Running",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else if (_selectedBatteryAvailableList ==
-                                            null) {
-                                          Toast.show(
-                                              "Please Select Battery Available",
-                                              context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        } else {
-                                          surveysubmit_yes(
-                                            apiToken.toString(),
-                                            widget.projectId.toString(),
-                                            widget.surveyId.toString(),
-                                            _selectedGpfeasibility.toString(),
-                                            _selectedOntAvailableList
-                                                .toString(),
-                                            _selectedOntPowerStateList
-                                                .toString(),
-                                            _selectedMakeModelList.toString(),
-                                            _macIdController.text.toString(),
-                                            _selectedPoeStatusList.toString(),
-                                            _selectedAlarmStatusList.toString(),
-                                            _selectedSolarPanelAvailableList
-                                                .toString(),
-                                            _selectedCcuAvailableList
-                                                .toString(),
-                                            _selectedPowerRunning.toString(),
-                                            _selectedBatteryAvailableList
-                                                .toString(),
-                                            _cable_req_length.text.toString(),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 120,
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        decoration: new BoxDecoration(
-                                            color: Colors.deepOrange,
-                                            borderRadius:
-                                            BorderRadius.circular(3)),
-                                        child: Text(
-                                          'Save',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.normal,
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                      : Container(),
-                ],
-              ),
-
-
-              check_edit_access_point == true
-                  ? Expanded(
-                child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    itemBuilder: (context, index0) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(
-                                left: 0.0,
-                                top: 10,
-                                bottom: 0.0,
-                                right: 0),
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: new GestureDetector(
-                                child: Container(
-                                  width: screenSize.width,
-                                  height: 50,
-                                  alignment: Alignment.centerLeft,
-                                  decoration: new BoxDecoration(
-                                      color: Colors.black.withOpacity(.7),
-                                      borderRadius:
-                                      BorderRadius.circular(0)),
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 15),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          "AP  -  " +
-                                              list[index0]
-                                                  .name
-                                                  .toString() ??
-                                              "",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle: FontStyle.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                        ]),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Latitude:  ",
-                                      style: const TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                    Text(list[index0].latitude.toString() ?? "",
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Longitude:  ",
-                                      style: const TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                    Text(list[index0].longitude.toString() ?? "",
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ],
                             ),
                           ),
-                          Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                              child: Container(
-                                height:150,
-                                child:
-                                GridView.builder(
-                                    itemCount: list[index0].surveyAccessPointImages.length,
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                                    itemBuilder: (context, index1) {
-                                      return Column(
-                                        children: <Widget>[
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8.0),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(8.0),
-                                              child: Image.network(
-                                                list[index0].surveyAccessPointImages[index1].image ,
-                                                fit: BoxFit.cover,
-                                                height: 80,
-                                                width: 100,
-                                              ),
-                                            ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                child: Text(
+                                  "Uploaded Images",
+                                  style: TextStyle(
+                                      color: Colors.black54, fontSize: 16),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(15, 5, 15, 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      //onTap: () => {_pickCameraImage(parentContext)},
+                                      onTap: () {
+                                        captureImage(ImageSource.camera,
+                                            parentContext);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5),
+                                            color: Colors.blue),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              27, 15, 27, 15),
+                                          child: Text(
+                                            "Take Picture",
+                                            style: TextStyle(
+                                                color: Colors.white),
                                           ),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(top: 10),
-                                            child: GestureDetector(
-                                              onTap: (){
-                                                _remAccessPointImage(
-                                                  apiToken.toString(),
-                                                  list[index0].surveyAccessPointImages[index1].id.toString(),
-                                                  list[index0].surveyAccessPointImages[index1].surveyId.toString(),
-                                                );
-                                                surveyAccessPointEdit(
-                                                  apiToken.toString(),
-                                                  list[index0].surveyId.toString(),
-                                                  list[index0].name.toString(),
-                                                  list[index0].id.toString(),
-                                                );
-                                              },
-                                              child: Container(
-                                                child: Text(
-                                                  "Delete",
-                                                  style: TextStyle(
-                                                      color: Colors.black54),
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        captureImage(ImageSource.gallery,
+                                            parentContext);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5),
+                                            color: Colors.blue),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              27, 15, 27, 15),
+                                          child: Text(
+                                            "Browse File to upload",
+                                            style: TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 10, 10, 0),
+                                  child: Container(
+                                    height: 120,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0,
+                                          left: 5,
+                                          right: 5,
+                                          bottom: 0),
+                                      child: GridView.count(
+                                        crossAxisCount: 3,
+                                        children: List.generate(
+                                            ImageList.length, (index) {
+                                          File file = ImageList[index];
+                                          return Column(
+                                            children: <Widget>[
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      8.0),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      8.0),
+                                                  child: Image.file(
+                                                    file,
+                                                    fit: BoxFit.cover,
+                                                    height: 75,
+                                                    width: 100,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }
-                                ),
-                              )
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    top: 10),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      ImageList.removeAt(
+                                                          index);
+                                                      print(
+                                                          "iiisdfgggggggggggggggggggggg");
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Delete",
+                                                    style: TextStyle(
+                                                        color:
+                                                        Colors.black54),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  )),
+                            ],
                           ),
                           Container(
                             margin: EdgeInsets.only(
                                 left: 0.0,
-                                top: 20.0,
+                                top: 10.0,
                                 bottom: 20.0,
                                 right: 5.0),
                             child: Column(
@@ -2234,24 +1064,31 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
                                   alignment: Alignment.center,
                                   child: new GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        _access_point_name.text = list[index0].name.toString();
-                                        _access_point_name_edit.text = list[index0].name.toString();
-                                        access_point_id_edit_value = list[index0].id.toString();
-                                        access_point_edit_check_from_list = false;
-                                      });
+                                      if (_selectedReasonlist == null) {
+                                        Toast.show(
+                                            "Please Select Reason", context,
+                                            duration: Toast.LENGTH_SHORT,
+                                            gravity: Toast.BOTTOM);
+                                      } else {
+                                        surveysubmit_no(
+                                          apiToken.toString(),
+                                          widget.projectId.toString(),
+                                          widget.surveyId.toString(),
+                                          _selectedGpfeasibility.toString(),
+                                          _selectedReasonlist.toString(),
+                                        );
+                                      }
                                     },
                                     child: Container(
                                       width: 120,
                                       height: 40,
                                       alignment: Alignment.center,
                                       decoration: new BoxDecoration(
-                                          color: Colors.black
-                                              .withOpacity(.7),
+                                          color: Colors.deepOrange,
                                           borderRadius:
                                           BorderRadius.circular(3)),
                                       child: Text(
-                                        'Edit',
+                                        'Save',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -2266,271 +1103,1468 @@ class _SiteSurveySubmitPageState extends State<SiteSurveySubmitPage> {
                             ),
                           ),
                         ],
-                      );
-                    }),
-              )
-                  : Container(),
-
-              checkshowImgupload_yes == true
-                  ? Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 0.0, top: 10, bottom: 0.0, right: 0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: new GestureDetector(
-                        onTap: () {
-                          /*Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                  builder: (context) => DashboardPage(),
-                                ));*/
-                        },
-                        child: Container(
-                          width: screenSize.width,
-                          height: 50,
-                          alignment: Alignment.centerLeft,
-                          decoration: new BoxDecoration(
-                              color: Colors.black.withOpacity(.7),
-                              borderRadius: BorderRadius.circular(0)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Text(
-                              '  ADD  -  ACCESS  POINTS',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FontStyle.normal,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10, top: 20),
-                    child: Center(
-                      child: Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width * 0.93,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                                color: Colors.black54, width: .2)),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                          child: TextFormField(
-                            controller: _access_point_name,
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(
-                                  15.0, 10.0, 15.0, 10.0),
-                              hintText: 'Enter AP Name or ID',
-                              //labelText: 'Email',
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(color: Colors.black54),
-                            ),
-                            style: TextStyle(color: Colors.black54),
-                            keyboardType: TextInputType.text,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
-                    child: Text(
-                      "Uploaded Images",
-                      style:
-                      TextStyle(color: Colors.black54, fontSize: 16),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        GestureDetector(
-                          //onTap: () => {_pickCameraImage(parentContext)},
-                          onTap: () {
-                            captureImage(
-                                ImageSource.camera, parentContext);
+                      )
+                          : Container(),
+                      _selectedGpfeasibility == 'Yes'
+                          ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              isONTDetailsClicked = !isONTDetailsClicked;
+                            });
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.blue),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  27, 15, 27, 15),
-                              child: Text(
-                                "Take Picture",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            captureImage(
-                                ImageSource.gallery, parentContext);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.blue),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  27, 15, 27, 15),
-                              child: Text(
-                                "Browse File to upload",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: Container(
-                        height: 110,
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 0, left: 5, right: 5, bottom: 0),
-                          child: GridView.count(
-                            crossAxisCount: 3,
-                            children:
-                            List.generate(ImageList.length, (index) {
-                              File file = ImageList[index];
-                              return Column(
-                                children: <Widget>[
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(8.0),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(8.0),
-                                      child: Image.file(
-                                        file,
-                                        fit: BoxFit.cover,
-                                        height: 75,
-                                        width: 100,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.only(top: 10),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          ImageList.removeAt(index);
-                                          print("IMg Delete");
-                                        });
-                                      },
-                                      child: Text(
-                                        "Delete",
-                                        style: TextStyle(
-                                            color: Colors.black54),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }),
-                          ),
-                        ),
-                      )),
-
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 0.0, top: 20.0, bottom: 20.0, right: 5.0),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          child: new GestureDetector(
-                            onTap: () {
-                              if (_access_point_name.text.toString() ==
-                                  "") {
-                                Toast.show(
-                                    "Please Fill Access Point", context,
-                                    duration: Toast.LENGTH_SHORT,
-                                    gravity: Toast.BOTTOM);
-                              } else if (checkimgupload_yes != true) {
-                                Toast.show("Please Take Picture", context,
-                                    duration: Toast.LENGTH_SHORT,
-                                    gravity: Toast.BOTTOM);
-                              } else {
-                                if(access_point_edit_check_from_list == true){
-                                  _getLocation().then((value) {
-                                    setState(() {
-                                      userLocation = value;
-                                    });
-                                  });
-                                  surveyAccessPointSubmit(
-                                      apiToken.toString(),
-                                      widget.surveyId.toString(),
-                                      _access_point_name.text.toString(),
-                                  );
-                                }else{
-                                  surveyAccessPointEdit(
-                                      apiToken.toString(),
-                                      widget.surveyId.toString(),
-                                      _access_point_name.text.toString(),
-                                      access_point_id_edit_value.toString()
-                                  );
-                                }
-                              }
-                            },
                             child: Container(
-                              width: 120,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: new BoxDecoration(
-                                  color:  access_point_edit_check_from_list == true ? Colors.deepOrange :
-                                  Colors.black
-                                      .withOpacity(.7),
-                                  borderRadius: BorderRadius.circular(3)),
+                              padding: const EdgeInsets.only(
+                                  top: 10 ,bottom: 10, left: 15, right: 15),
+                              width: MediaQuery.of(context).size.width,
+                              height: 60,
+                              alignment: Alignment.centerLeft,
+                              color: Colors.blueGrey[600],
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text("ONT Details",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16)),
+                                  Icon(!isONTDetailsClicked? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up, color: Colors.white,),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Visibility(
+                          visible: isONTDetailsClicked? true :false,
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only( top:10,
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("ONT Available:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value:
+                                                    _selectedOntAvailableList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedOntAvailableList =
+                                                            value;
+                                                        print(
+                                                            _selectedOntAvailableList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("ONT Power Status:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value:
+                                                    _selectedOntPowerStateList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedOntPowerStateList =
+                                                            value;
+                                                        print(
+                                                            _selectedOntPowerStateList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("ONT Make & Model:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value: _selectedMakeModelList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedMakeModelList =
+                                                            value;
+                                                        print(
+                                                            _selectedMakeModelList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("ONT Make ID:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: TextFormField(
+                                            controller: _macIdController,
+
+                                            focusNode: myfocusnode,
+                                            onFieldSubmitted: (term){
+                                              myfocusnode.unfocus();
+                                            },
+                                            autofocus: false,
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.fromLTRB(
+                                                  15.0, 10.0, 15.0, 10.0),
+                                              hintText: 'Enter Mac id',
+
+                                              //labelText: 'Email',
+                                              border: InputBorder.none,
+                                              hintStyle:
+                                              TextStyle(color: Colors.black54),
+                                            ),
+                                            style: TextStyle(color: Colors.black54),
+                                            keyboardType: TextInputType.text,
+
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("POE Status:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value: _selectedPoeStatusList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedPoeStatusList =
+                                                            value;
+                                                        print(
+                                                            _selectedPoeStatusList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("Alarm Status:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value: _selectedAlarmStatusList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedAlarmStatusList =
+                                                            value;
+                                                        print(
+                                                            _selectedAlarmStatusList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("Power Running:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value: _selectedPowerRunning,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedPowerRunning =
+                                                            value;
+                                                        print(
+                                                            _selectedPowerRunning);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("Solar Panel Available:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value:
+                                                    _selectedSolarPanelAvailableList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedSolarPanelAvailableList =
+                                                            value;
+                                                        print(
+                                                            _selectedSolarPanelAvailableList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("CCU Available:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value:
+                                                    _selectedCcuAvailableList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedCcuAvailableList =
+                                                            value;
+                                                        print(
+                                                            _selectedCcuAvailableList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("Battery Available:",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      13, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    hint: Text('Select'),
+                                                    isExpanded: true,
+                                                    value:
+                                                    _selectedBatteryAvailableList,
+                                                    icon: Icon(
+                                                      Icons.expand_more,
+                                                      size: 35,
+                                                    ),
+                                                    iconSize: 24,
+                                                    elevation: 16,
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 16),
+                                                    underline: Container(
+                                                      height: 0,
+                                                    ),
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        _selectedBatteryAvailableList =
+                                                            value;
+                                                        print(
+                                                            _selectedBatteryAvailableList);
+                                                      });
+                                                    },
+                                                    items:
+                                                    _selectlist.map((s_list) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: s_list,
+                                                        child: Text(
+                                                          s_list,
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.black54,
+                                                            fontSize: 16.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 15, right: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text("ONT LAN Cable \nRequired Length(M):",
+                                          style: TextStyle(
+                                              color: Colors.black54, fontSize: 16)),
+                                      Container(
+                                        height: 50,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                                color: Colors.black54, width: .2)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: TextFormField(
+                                            controller: _cable_req_length,
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.fromLTRB(
+                                                  15.0, 10.0, 15.0, 10.0),
+                                              hintText: 'Such as 12, 13, 15',
+                                              //labelText: 'Email',
+                                              border: InputBorder.none,
+                                              hintStyle:
+                                              TextStyle(color: Colors.black54),
+                                            ),
+                                            style: TextStyle(color: Colors.black54),
+                                            keyboardType: TextInputType.text,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: 0.0, top: 20.0, bottom: 20, right: 5.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: new GestureDetector(
+                                          onTap: () {
+                                            if (_selectedOntAvailableList == null) {
+                                              Toast.show(
+                                                  "Please Select ONT Available",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedOntPowerStateList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select ONT Power Status",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedMakeModelList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select ONT Make & Model",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_macIdController.text
+                                                .toString() ==
+                                                "") {
+                                              Toast.show(
+                                                  "Please Fill Mac ID", context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedPoeStatusList ==
+                                                null) {
+                                              Toast.show("Please Select Poe Status",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedAlarmStatusList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select Alarm Status",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedSolarPanelAvailableList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select Solar Panel Available",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedCcuAvailableList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select CCU Available",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_cable_req_length.text
+                                                .toString() ==
+                                                "") {
+                                              Toast.show(
+                                                  "Please Fill Cable Req Length",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedPowerRunning ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select Power Running",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else if (_selectedBatteryAvailableList ==
+                                                null) {
+                                              Toast.show(
+                                                  "Please Select Battery Available",
+                                                  context,
+                                                  duration: Toast.LENGTH_SHORT,
+                                                  gravity: Toast.BOTTOM);
+                                            } else {
+                                              surveysubmit_yes(
+                                                apiToken.toString(),
+                                                widget.projectId.toString(),
+                                                widget.surveyId.toString(),
+                                                _selectedGpfeasibility.toString(),
+                                                _selectedOntAvailableList
+                                                    .toString(),
+                                                _selectedOntPowerStateList
+                                                    .toString(),
+                                                _selectedMakeModelList.toString(),
+                                                _macIdController.text.toString(),
+                                                _selectedPoeStatusList.toString(),
+                                                _selectedAlarmStatusList.toString(),
+                                                _selectedSolarPanelAvailableList
+                                                    .toString(),
+                                                _selectedCcuAvailableList
+                                                    .toString(),
+                                                _selectedPowerRunning.toString(),
+                                                _selectedBatteryAvailableList
+                                                    .toString(),
+                                                _cable_req_length.text.toString(),
+                                              );
+                                            }
+                                          },
+                                          child: Container(
+                                            width: 120,
+                                            height: 40,
+                                            alignment: Alignment.center,
+                                            decoration: new BoxDecoration(
+                                                color: Colors.deepOrange,
+                                                borderRadius:
+                                                BorderRadius.circular(3)),
+                                            child: Text(
+                                              'Save',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                          : Container(),
+                    ],
+                  ),
+                ),
+
+                checkshowImgupload_yes == true
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: 0.0, top: 10, bottom: 0.0, right: 0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: new GestureDetector(
+                          onTap: () {
+                            /*Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                      builder: (context) => DashboardPage(),
+                                    ));*/
+                          },
+                          child: Container(
+                            width: screenSize.width,
+                            height: 50,
+                            alignment: Alignment.centerLeft,
+                            decoration: new BoxDecoration(
+                                color: Colors.black.withOpacity(.7),
+                                borderRadius: BorderRadius.circular(0)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15),
                               child: Text(
-                                access_point_edit_check_from_list == true ? 'Add AP' : "Edit AP",
+                                '  ADD  -  ACCESS  POINTS',
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
                                   fontStyle: FontStyle.normal,
                                 ),
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 10,
-                    height: 1,
-                    child: TextField(
-                      controller: _access_point_name_edit,
-                      decoration: const InputDecoration.collapsed(
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.white, fontSize: 1),
+                        ),
                       ),
-                      style: TextStyle(color: Colors.white, fontSize: 1),
                     ),
-                  ),
-                ],
-              )
-                  : Container(),
-            ],
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10, top: 20),
+                      child: Center(
+                        child: Container(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width * 0.93,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  color: Colors.black54, width: .2)),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                            child: TextFormField(
+                              controller: _access_point_name,
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    15.0, 10.0, 15.0, 10.0),
+                                hintText: 'Enter AP Name or ID',
+                                //labelText: 'Email',
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(color: Colors.black54),
+                              ),
+                              style: TextStyle(color: Colors.black54),
+                              keyboardType: TextInputType.text,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
+                      child: Text(
+                        "Uploaded Images",
+                        style:
+                        TextStyle(color: Colors.black54, fontSize: 16),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          GestureDetector(
+                            //onTap: () => {_pickCameraImage(parentContext)},
+                            onTap: () {
+                              captureImage(
+                                  ImageSource.camera, parentContext);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.blue),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    27, 15, 27, 15),
+                                child: Text(
+                                  "Take Picture",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              captureImage(
+                                  ImageSource.gallery, parentContext);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.blue),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    27, 15, 27, 15),
+                                child: Text(
+                                  "Browse File to upload",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: Container(
+                          height: 110,
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 0, left: 5, right: 5, bottom: 0),
+                            child: GridView.count(
+                              crossAxisCount: 3,
+                              children:
+                              List.generate(ImageList.length, (index) {
+                                File file = ImageList[index];
+                                return Column(
+                                  children: <Widget>[
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(8.0),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(8.0),
+                                        child: Image.file(
+                                          file,
+                                          fit: BoxFit.cover,
+                                          height: 75,
+                                          width: 100,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.only(top: 10),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            ImageList.removeAt(index);
+                                            print("IMg Delete");
+                                          });
+                                        },
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(
+                                              color: Colors.black54),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
+                        )),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: 0.0, top: 20.0, bottom: 20.0, right: 5.0),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.center,
+                              child: new GestureDetector(
+                                onTap: () {
+                                  if (_access_point_name.text.toString() ==
+                                      "") {
+                                    Toast.show(
+                                        "Please Fill Access Point", context,
+                                        duration: Toast.LENGTH_SHORT,
+                                        gravity: Toast.BOTTOM);
+                                  } else if (checkimgupload_yes != true) {
+                                    Toast.show("Please Take Picture", context,
+                                        duration: Toast.LENGTH_SHORT,
+                                        gravity: Toast.BOTTOM);
+                                  } else {
+                                    if(access_point_edit_check_from_list == true){
+                                      _getLocation().then((value) {
+                                        setState(() {
+                                          userLocation = value;
+                                        });
+                                      });
+                                      surveyAccessPointSubmit(
+                                        apiToken.toString(),
+                                        widget.surveyId.toString(),
+                                        _access_point_name.text.toString(),
+                                      );
+                                    }else{
+                                      surveyAccessPointEdit(
+                                          apiToken.toString(),
+                                          widget.surveyId.toString(),
+                                          _access_point_name.text.toString(),
+                                          access_point_id_edit_value.toString()
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  width: 120,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  decoration: new BoxDecoration(
+                                      color:  access_point_edit_check_from_list == true ? Colors.deepOrange :
+                                      Colors.black
+                                          .withOpacity(.7),
+                                      borderRadius: BorderRadius.circular(3)),
+                                  child: Text(
+                                    access_point_edit_check_from_list == true ? 'Add AP' : "Edit AP",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 10,
+                        height: 1,
+                        child: TextField(
+                          controller: _access_point_name_edit,
+                          decoration: const InputDecoration.collapsed(
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: Colors.white, fontSize: 1),
+                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 1),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                )
+                    : Container(width: 10, height: 10,),
+
+                check_edit_access_point == true
+                    ? ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: list.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index0) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: 0.0,
+                                    top: 10,
+                                    bottom: 0.0,
+                                    right: 0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: new GestureDetector(
+                                    child: Container(
+                                      width: screenSize.width,
+                                      height: 50,
+                                      alignment: Alignment.centerLeft,
+                                      decoration: new BoxDecoration(
+                                          color: Colors.black.withOpacity(.7),
+                                          borderRadius:
+                                          BorderRadius.circular(0)),
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.only(left: 15),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              "AP  -  " +
+                                                  list[index0]
+                                                      .name
+                                                      .toString() ??
+                                                  "",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontStyle: FontStyle.normal,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "Latitude:  ",
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                        Text(list[index0].latitude.toString() ?? "",
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontStyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "Longitude:  ",
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                        Text(list[index0].longitude.toString() ?? "",
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontStyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                                  child: Container(
+                                    height:150,
+                                    child:
+                                    GridView.builder(
+                                        itemCount: list[index0].surveyAccessPointImages.length,
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                        itemBuilder: (context, index1) {
+                                          return Column(
+                                            children: <Widget>[
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  child: Image.network(
+                                                    list[index0].surveyAccessPointImages[index1].image ,
+                                                    fit: BoxFit.cover,
+                                                    height: 80,
+                                                    width: 100,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(top: 10),
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    _remAccessPointImage(
+                                                      apiToken.toString(),
+                                                      list[index0].surveyAccessPointImages[index1].id.toString(),
+                                                      list[index0].surveyAccessPointImages[index1].surveyId.toString(),
+                                                    );
+                                                    surveyAccessPointEdit(
+                                                      apiToken.toString(),
+                                                      list[index0].surveyId.toString(),
+                                                      list[index0].name.toString(),
+                                                      list[index0].id.toString(),
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    child: Text(
+                                                      "Delete",
+                                                      style: TextStyle(
+                                                          color: Colors.black54),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        }
+                                    ),
+                                  )
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: 0.0,
+                                    top: 20.0,
+                                    bottom: 20.0,
+                                    right: 5.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: new GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _access_point_name.text = list[index0].name.toString();
+                                            _access_point_name_edit.text = list[index0].name.toString();
+                                            access_point_id_edit_value = list[index0].id.toString();
+                                            access_point_edit_check_from_list = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: 120,
+                                          height: 40,
+                                          alignment: Alignment.center,
+                                          decoration: new BoxDecoration(
+                                              color: Colors.black
+                                                  .withOpacity(.7),
+                                              borderRadius:
+                                              BorderRadius.circular(3)),
+                                          child: Text(
+                                            'Edit',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.normal,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        })
+                    : Container(width: 10, height: 10,),
+
+              ],
+            ),
           ),
         ),
       ),

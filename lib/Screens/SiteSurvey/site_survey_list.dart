@@ -32,6 +32,8 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
   List<SurveyListItem> completedLiveData;
   List<SurveyListItem> notFeasibilityLiveData;
 
+  String search_text;
+
   getTokenRoSf() async {
     SharedPreferences shaPref = await SharedPreferences.getInstance();
     apiToken = shaPref.get("token");
@@ -49,6 +51,8 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
       notFeasibilityLiveData = [];
       getTokenRoSf();
     }
+
+    search_text = '';
 
     if (isToken) {
       listOfSurvey();
@@ -82,7 +86,7 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
         ),
         backgroundColor: Colors.black,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => DashboardPage()),
@@ -134,6 +138,50 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                             ),
                             border: InputBorder.none,
                           ),
+                          onChanged: (value){
+
+                            setState(() {
+                              search_text = value;
+
+                              pendingLiveData.retainWhere((element) {
+                                return (
+                                    (element.gpName.toLowerCase()).contains(value) ||
+                                        element.dmName.toLowerCase().contains(value) ||
+                                        element.gramPanchayatName.toLowerCase().contains(value) ||
+                                        element.districtName.toLowerCase().contains(value) ||
+                                        element.distStateName.toLowerCase().contains(value) ||
+                                        element.blockName.toLowerCase().contains(value) ||
+                                    element.blockName.toLowerCase().contains(value)
+                                );
+                              });
+
+                              completedLiveData.retainWhere((element) {
+                                return (
+                                   element.gpName.toLowerCase().contains(value) ||
+                                       element.dmName.toLowerCase().contains(value) ||
+                                       element.gramPanchayatName.toLowerCase().contains(value) ||
+                                       element.districtName.toLowerCase().contains(value) ||
+                                       element.distStateName.toLowerCase().contains(value) ||
+                                       element.blockName.toLowerCase().contains(value) ||
+                                    element.dmMobile.toLowerCase().contains(value)
+                                );
+                              });
+
+                              notFeasibilityLiveData.retainWhere((element) {
+                                return (
+                                   element.gpName.toLowerCase().contains(value) ||
+                                       element.dmName.toLowerCase().contains(value) ||
+                                       element.gramPanchayatName.toLowerCase().contains(value) ||
+                                       element.districtName.toLowerCase().contains(value) ||
+                                       element.distStateName.toLowerCase().contains(value) ||
+                                       element.blockName.toLowerCase().contains(value) ||
+                                    element.dmMobile.toLowerCase().contains(value)
+                                );
+                              });
+
+                            });
+
+                          },
                           style: TextStyle(
                             color: Colors.blue,
                             fontSize: 15.0,
@@ -303,12 +351,13 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                       child: ListView.builder(
                         itemCount: pendingLiveData.length,
                         itemBuilder: (context, index) {
+
                           return Column(
                             children: [
                               Row(
                                 key: ValueKey('1'),
                                 crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
@@ -317,79 +366,79 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                           MaterialPageRoute(
                                             builder: (_) =>
                                                 SiteSurveySubmitPage(
-                                              surveyId: pendingLiveData[index].id.toString(),
-                                              projectId: pendingLiveData[index].userId.toString(),
-                                              title: pendingLiveData[
-                                                      index]
-                                                  .gramPanchayatName,
-                                              gpName: pendingLiveData[
-                                                      index]
-                                                  .gramPanchayatName,
-                                              gpDistrictName:
+                                                  surveyId: pendingLiveData[index].id.toString(),
+                                                  projectId: pendingLiveData[index].userId.toString(),
+                                                  title: pendingLiveData[
+                                                  index]
+                                                      .gramPanchayatName,
+                                                  gpName: pendingLiveData[
+                                                  index]
+                                                      .gramPanchayatName,
+                                                  gpDistrictName:
                                                   pendingLiveData[
-                                                          index]
+                                                  index]
                                                       .districtName,
-                                              gpStateName:
+                                                  gpStateName:
                                                   pendingLiveData[
-                                                          index]
+                                                  index]
                                                       .stateName,
-                                              gpBlockName:
+                                                  gpBlockName:
                                                   pendingLiveData[
-                                                          index]
+                                                  index]
                                                       .blockName,
-                                              gpVillageName:
+                                                  gpVillageName:
                                                   pendingLiveData[
-                                                          index]
+                                                  index]
                                                       .vleName,
-                                              gpMobileNumber:
+                                                  gpMobileNumber:
                                                   pendingLiveData[
-                                                          index]
+                                                  index]
                                                       .vleMobile,
-                                            ),
+                                                ),
                                           ),
                                         );
                                       },
                                       child: Container(
                                         alignment:
-                                            Alignment.centerLeft,
+                                        Alignment.centerLeft,
                                         decoration:
-                                            new BoxDecoration(
+                                        new BoxDecoration(
                                           color: Color(0xffffffff),
                                           borderRadius:
-                                              BorderRadius.circular(
-                                                  5),
+                                          BorderRadius.circular(
+                                              5),
                                         ),
                                         child: Padding(
                                           padding:
-                                              EdgeInsets.all(10.0),
+                                          EdgeInsets.all(10.0),
                                           child: Column(
                                             children: [
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       pendingLiveData[
-                                                              index]
+                                                      index]
                                                           .gramPanchayatName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Color(
                                                             0xff131721),
                                                         fontSize:
-                                                            16,
+                                                        16,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -402,30 +451,30 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                               ),
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       pendingLiveData[
-                                                              index]
+                                                      index]
                                                           .distStateName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Colors
                                                             .black54,
                                                         fontSize:
-                                                            13,
+                                                        13,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -442,6 +491,7 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                               SizedBox(height: 20.0),
                             ],
                           );
+
                         },
                       ),
                     ),
@@ -454,12 +504,13 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                       child: ListView.builder(
                         itemCount: completedLiveData.length,
                         itemBuilder: (context, index) {
+
                           return Column(
                             children: [
                               Row(
                                 key: ValueKey('1'),
                                 crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
@@ -483,45 +534,45 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                       },
                                       child: Container(
                                         alignment:
-                                            Alignment.centerLeft,
+                                        Alignment.centerLeft,
                                         decoration:
-                                            new BoxDecoration(
+                                        new BoxDecoration(
                                           color: Color(0xffffffff),
                                           borderRadius:
-                                              BorderRadius.circular(
-                                                  5),
+                                          BorderRadius.circular(
+                                              5),
                                         ),
                                         child: Padding(
                                           padding:
-                                              EdgeInsets.all(10.0),
+                                          EdgeInsets.all(10.0),
                                           child: Column(
                                             children: [
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       completedLiveData[
-                                                              index]
+                                                      index]
                                                           .gramPanchayatName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Color(
                                                             0xff131721),
                                                         fontSize:
-                                                            16,
+                                                        16,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -534,30 +585,30 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                               ),
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       completedLiveData[
-                                                              index]
+                                                      index]
                                                           .distStateName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Colors
                                                             .black54,
                                                         fontSize:
-                                                            13,
+                                                        13,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -574,7 +625,9 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                               SizedBox(height: 20.0),
                             ],
                           );
+
                         },
+
                       ),
                     ),
                   )
@@ -586,12 +639,13 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                       child: ListView.builder(
                         itemCount: notFeasibilityLiveData.length,
                         itemBuilder: (context, index) {
+
                           return Column(
                             children: [
                               Row(
                                 key: ValueKey('1'),
                                 crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
@@ -615,45 +669,45 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                       },
                                       child: Container(
                                         alignment:
-                                            Alignment.centerLeft,
+                                        Alignment.centerLeft,
                                         decoration:
-                                            new BoxDecoration(
+                                        new BoxDecoration(
                                           color: Color(0xffffffff),
                                           borderRadius:
-                                              BorderRadius.circular(
-                                                  5),
+                                          BorderRadius.circular(
+                                              5),
                                         ),
                                         child: Padding(
                                           padding:
-                                              EdgeInsets.all(10.0),
+                                          EdgeInsets.all(10.0),
                                           child: Column(
                                             children: [
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       notFeasibilityLiveData[
-                                                              index]
+                                                      index]
                                                           .gramPanchayatName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Color(
                                                             0xff131721),
                                                         fontSize:
-                                                            16,
+                                                        16,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -666,30 +720,30 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                                               ),
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                CrossAxisAlignment
+                                                    .start,
                                                 children: <Widget>[
                                                   Container(
                                                     alignment: Alignment
                                                         .centerLeft,
                                                     child: Text(
                                                       notFeasibilityLiveData[
-                                                              index]
+                                                      index]
                                                           .distStateName,
                                                       style:
-                                                          TextStyle(
+                                                      TextStyle(
                                                         fontFamily:
-                                                            'Overpass',
+                                                        'Overpass',
                                                         color: Colors
                                                             .black54,
                                                         fontSize:
-                                                            13,
+                                                        13,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .w400,
+                                                        FontWeight
+                                                            .w400,
                                                         fontStyle:
-                                                            FontStyle
-                                                                .normal,
+                                                        FontStyle
+                                                            .normal,
                                                       ),
                                                     ),
                                                   ),
@@ -706,6 +760,7 @@ class _SiteSurveyPageState extends State<SiteSurveyPage> {
                               SizedBox(height: 20.0),
                             ],
                           );
+
                         },
                       ),
                     ),

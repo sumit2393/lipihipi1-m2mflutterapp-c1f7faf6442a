@@ -79,7 +79,7 @@ class _InstallationPageState extends State<InstallationPage> {
         ),
         backgroundColor: Colors.black,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => DashboardPage()),
@@ -427,34 +427,15 @@ class _InstallationPageState extends State<InstallationPage> {
                                           MaterialPageRoute(
                                             builder: (_) =>
                                                 InstallationEditPage(
-                                                  installationId: pendingLiveData[index].id.toString(),
-                                                  projectId: pendingLiveData[index].userId.toString(),
-                                                  title: pendingLiveData[
-                                                  index]
-                                                      .gramPanchayatName,
-                                                  gpName: pendingLiveData[
-                                                  index]
-                                                      .gramPanchayatName,
-                                                  gpDistrictName:
-                                                  pendingLiveData[
-                                                  index]
-                                                      .districtName,
-                                                  gpStateName:
-                                                  pendingLiveData[
-                                                  index]
-                                                      .stateName,
-                                                  gpBlockName:
-                                                  pendingLiveData[
-                                                  index]
-                                                      .blockName,
-                                                  gpVillageName:
-                                                  pendingLiveData[
-                                                  index]
-                                                      .vleName,
-                                                  gpMobileNumber:
-                                                  pendingLiveData[
-                                                  index]
-                                                      .vleMobile,
+                                                  installationId: completedLiveData[index].id.toString(),
+                                                  projectId: completedLiveData[index].userId.toString(),
+                                                  title: completedLiveData[index].gramPanchayatName,
+                                                  gpName: completedLiveData[index].gramPanchayatName,
+                                                  gpDistrictName: completedLiveData[index].districtName,
+                                                  gpStateName: completedLiveData[index].stateName,
+                                                  gpBlockName: completedLiveData[index].blockName,
+                                                  gpVillageName: completedLiveData[index].vleName,
+                                                  gpMobileNumber: completedLiveData[index].vleMobile,
                                                 ),
                                           ),
                                         );
