@@ -1,6 +1,6 @@
 # flutterapp
 
-A new Flutter application.
+A  Flutter application related to site survey where data collect in offline storage..
 
 ## Getting Started
 
